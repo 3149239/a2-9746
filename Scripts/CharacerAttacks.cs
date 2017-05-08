@@ -18,26 +18,27 @@ public class CharacerAttacks : MonoBehaviour
     float blueHealth;               //Blue Wizard Health
     float myTimer;                  //Game Timer
 
-    bool gameStarted;               //Check if game has started
+    public bool gameStarted;               //Check if game has started
     bool redFirst;                  //Who will make the first move
-    public bool oddRoll;                   //Dice roll odd or even
+    public bool oddRoll;            //Dice roll odd or even
     bool betRed;                    //bet red or blue
 
-    Random myDice = new Random();
+    Random myDice = new Random();   //new random for dice roll
+
 
 
     // Use this for initialization
     void Start()
     {
 
-        redHealth = 20f;    //Red Wizard starting health
-        blueHealth = 20f;   //Blue Wizard starting health
-        myTimer = 0f;       //Timer starts at 0
-        weaponPower = 1f;   //Weapon power starts at 1
-        gameStarted = false;    //has the game started
-        oddRoll = false;    //dice roll is odd
-        redFirst = false;   //red first go
-        betRed = false;     //bet on red
+        redHealth = 20f;            //Red Wizard starting health
+        blueHealth = 20f;           //Blue Wizard starting health
+        myTimer = 0f;               //Timer starts at 0
+        weaponPower = 1f;           //Weapon power starts at 1
+        gameStarted = false;        //has the game started
+        oddRoll = false;            //dice roll is odd
+        redFirst = false;           //red first go
+        betRed = false;             //bet on red
 
 
 

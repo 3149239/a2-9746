@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InterfaceControl : MonoBehaviour {
 
-    public interface IMyDiceInterface
+    public interface IMyDiceInterface                       //interface that reads if the dice roll was even or odd
     {
         void MyDiceRoll();
     }
@@ -19,12 +19,12 @@ public class InterfaceControl : MonoBehaviour {
 
             if (GameObject.Find("Scripts").GetComponent<CharacerAttacks>().oddRoll == true)
             {
-                Debug.Log("The dice rolled was ODD");
+                Debug.Log("The dice rolled was ODD");           //writes the outcome of the roll into the console
             }
 
             if (GameObject.Find("Scripts").GetComponent<CharacerAttacks>().oddRoll == false)
             {
-                Debug.Log("The dice rolled was EVEN");
+                Debug.Log("The dice rolled was EVEN");          //writes the outcome of the roll into the console
             }
         }
 
