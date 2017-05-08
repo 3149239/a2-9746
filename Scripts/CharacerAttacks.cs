@@ -24,6 +24,7 @@ public class CharacerAttacks : MonoBehaviour
     public float blueHealth;        //Blue Wizard Health
     public float myTimer;           //Game Timer
     public float myCountdownTimer;  //countdown timer
+    public float attackTimer;       //timer between attacks
 
     public bool gameStarted;        //Check if game has started
     public bool redFirst;           //Who will make the first move
@@ -32,6 +33,8 @@ public class CharacerAttacks : MonoBehaviour
     public bool diceRolled;         //checks if dice has been rolled
     public bool bet10coins;         //player bets 10 or 25 coins
     public bool betOdd;             //player bet on odd;
+    public bool fightStart;         //triggers the fight to begin
+    public bool firstAttacked;        //checks if the first wizard has just attacked
 
     public Random myDice = new Random();   //new random for dice roll
 
@@ -52,6 +55,8 @@ public class CharacerAttacks : MonoBehaviour
         betRed = false;             //bet on red
         diceRolled = false;         //the dice has not yet been rolled
         bet10coins = true;          //sets 10 coins to default
+        fightStart = false;         //the fight has not yet started
+        attackTimer = 0;
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
@@ -60,6 +65,7 @@ public class CharacerAttacks : MonoBehaviour
     // Update is called once per frame (60fps)
     void FixedUpdate()
     {
+        
 
         if (gameStarted == true)            //if the game has started
         {
@@ -78,6 +84,7 @@ public class CharacerAttacks : MonoBehaviour
             if (myTimer % 60 == 1)      //if the timer devided by 60 is 1, do:
             {
                 myCountdownTimer -= 1;  //make the countdown timer go down by 1 each 60 frames (each second)
+                attackTimer += 1;       //makes the attack timer go up each second
             }
 
             if (betRed == true)         //if the player bets on red to win
@@ -95,25 +102,64 @@ public class CharacerAttacks : MonoBehaviour
                 }
 
             }
-            if (betRed == false)
+            if (betRed == false)        //if the player bets on blue to win
             {
 
                 if ((betOdd == true && oddRoll == true) || (betOdd == false && oddRoll == false))       //if the player guessed the dice roll correctly they will go first
                 {
                     wizardFirst.text = "The BLUE wizard will attack first";
-                    redFirst = true; //red wizard will attack first
+                    redFirst = false;    //red wizard will attack first
                 }
 
-                else //if the player didnt guess the dice roll correctly they wont fo first
+                else                    //if the player didnt guess the dice roll correctly they wont fo first
                 {
                     wizardFirst.text = "The RED wizard will attack first";
-                    redFirst = false; //blue wizard will attack first
+                    redFirst = true;   //blue wizard will attack first
                 }
 
             }
 
+            if (myCountdownTimer == 0)             //if the timer reaches zero
+            {
+                myCountdownTimer = 100;            //set timer to 100
+                fightStart = true;                 //start the fight
+            }
 
+            if (fightStart == true)                 //if the fight has started
+            {
+                diceOutcomePanel.SetActive(false);  //sets the panel to not active
 
+                if (redFirst == true)               //if the red wizard is starting the fight
+                {
+                    if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack blue
+                    {
+                        redAttack();                //red attacks first
+                        firstAttacked = true;       //tells player its blue's turn to attack
+                        attackTimer = 0;            //sets blue's attack timer to 0
+                    }
+
+                    else if (attackTimer == 3 && firstAttacked == true)                //3 seconds after red's attack, blue can now attack
+                    {
+                        blueAttack();               //blue can attack
+                        firstAttacked = false;      //says the second wizard has attacks
+                    }
+                }
+                if (redFirst == false)              //if the blue wizard is starting the fight
+                {
+                    if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack red
+                    {
+                        blueAttack();               //blue attacks first
+                        firstAttacked = true;       //tells player its red's turn to attack
+                        attackTimer = 0;            //sets red's attack timer to 0
+                    }
+
+                    else if (attackTimer == 3 && firstAttacked == true)                //3 seconds after blue's attack, red can now attack
+                    {
+                        redAttack();                //red can attack
+                        firstAttacked = false;      //says the second wizard has attacks
+                    }
+                }
+            }
 
         }
     }
@@ -137,7 +183,16 @@ public class CharacerAttacks : MonoBehaviour
         }
     }
 
+    void redAttack ()       //red's attack
+    {
+        Debug.Log("Red attacks");
+    }
 
-    
+    void blueAttack()       //blue's attack
+    {
+        Debug.Log("Blue attacks");
+    }
+
+
 
 }
