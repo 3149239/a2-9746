@@ -34,9 +34,12 @@ public class CharacerAttacks : MonoBehaviour
     public bool bet10coins;         //player bets 10 or 25 coins
     public bool betOdd;             //player bet on odd;
     public bool fightStart;         //triggers the fight to begin
-    public bool firstAttacked;        //checks if the first wizard has just attacked
+    public bool firstAttacked;      //checks if the first wizard has just attacked
+    public bool redAttacked;        //checks if red has just attacked
 
-    public Random myDice = new Random();   //new random for dice roll
+    public Random myDice = new Random();        //new random for dice roll
+    public Random myRedAttack = new Random();   //new random for red attacks
+    public Random myBlueAttack = new Random();  //new random for blue attacks
 
 
 
@@ -56,7 +59,7 @@ public class CharacerAttacks : MonoBehaviour
         diceRolled = false;         //the dice has not yet been rolled
         bet10coins = true;          //sets 10 coins to default
         fightStart = false;         //the fight has not yet started
-        attackTimer = 0;
+        attackTimer = 0;            //sets attack timer to 0
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
@@ -108,13 +111,13 @@ public class CharacerAttacks : MonoBehaviour
                 if ((betOdd == true && oddRoll == true) || (betOdd == false && oddRoll == false))       //if the player guessed the dice roll correctly they will go first
                 {
                     wizardFirst.text = "The BLUE wizard will attack first";
-                    redFirst = false;    //red wizard will attack first
+                    redFirst = false;   //red wizard will attack first
                 }
 
                 else                    //if the player didnt guess the dice roll correctly they wont fo first
                 {
                     wizardFirst.text = "The RED wizard will attack first";
-                    redFirst = true;   //blue wizard will attack first
+                    redFirst = true;    //blue wizard will attack first
                 }
 
             }
@@ -125,38 +128,46 @@ public class CharacerAttacks : MonoBehaviour
                 fightStart = true;                 //start the fight
             }
 
-            if (fightStart == true)                 //if the fight has started
+            if (fightStart == true)                //if the fight has started
             {
-                diceOutcomePanel.SetActive(false);  //sets the panel to not active
+                diceOutcomePanel.SetActive(false); //sets the panel to not active
 
-                if (redFirst == true)               //if the red wizard is starting the fight
+                if (redFirst == true)              //if the red wizard is starting the fight
                 {
                     if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack blue
                     {
-                        redAttack();                //red attacks first
-                        firstAttacked = true;       //tells player its blue's turn to attack
-                        attackTimer = 0;            //sets blue's attack timer to 0
+                        redAttacked = false;       //says that red hasnt attacked yet
+                        //redAttack();               //red attacks first
+                        MyRedAttacks(myRedAttack);
+                        firstAttacked = true;      //tells player its blue's turn to attack
+                        attackTimer = 0;           //sets blue's attack timer to 0
                     }
 
-                    else if (attackTimer == 3 && firstAttacked == true)                //3 seconds after red's attack, blue can now attack
+                    else if (attackTimer == 3 && firstAttacked == true)          //3 seconds after red's attack, blue can now attack
                     {
-                        blueAttack();               //blue can attack
-                        firstAttacked = false;      //says the second wizard has attacks
+                        redAttacked = true;        //says that red has already attacked
+                        //blueAttack();              //blue can attack
+                        MyBlueAttacks(myBlueAttack);
+                        firstAttacked = false;     //says the second wizard has attacks
                     }
                 }
-                if (redFirst == false)              //if the blue wizard is starting the fight
+                if (redFirst == false)             //if the blue wizard is starting the fight
                 {
                     if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack red
                     {
-                        blueAttack();               //blue attacks first
-                        firstAttacked = true;       //tells player its red's turn to attack
-                        attackTimer = 0;            //sets red's attack timer to 0
+                        redAttacked = true;        //says that red has already attacked
+                        //blueAttack();              //blue attacks first
+                        MyBlueAttacks(myBlueAttack);
+                        firstAttacked = true;      //tells player its red's turn to attack
+                        attackTimer = 0;           //sets red's attack timer to 0
                     }
 
-                    else if (attackTimer == 3 && firstAttacked == true)                //3 seconds after blue's attack, red can now attack
+                    else if (attackTimer == 3 && firstAttacked == true)           //3 seconds after blue's attack, red can now attack
                     {
-                        redAttack();                //red can attack
-                        firstAttacked = false;      //says the second wizard has attacks
+                        redAttacked = false;       //says that red hasnt attacked yet
+                        //redAttack();               //red can attack
+                        MyRedAttacks(myRedAttack);
+                        firstAttacked = false;     //says the second wizard has attacks
                     }
                 }
             }
@@ -183,9 +194,54 @@ public class CharacerAttacks : MonoBehaviour
         }
     }
 
+    void MyRedAttacks(Random myRedAttack)            //Red Wizard Attacks
+    {
+        int computerPick2;
+        computerPick2 = Random.Range(1, 4);          //picks a random between 1 and 4
+
+        Debug.Log(computerPick2);                    //check with debug what the number is
+        Debug.Log("Red attacks");                    //says that red is attacking
+
+        if (computerPick2 == 1)                      //if the random number chosen is 1 - use this attack
+        {
+            Instantiate(fireWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots fire
+        }
+        if (computerPick2 == 2)                      //if the random number chosen is 2 - use this attack
+        {
+            Instantiate(rockWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots rock
+        }
+        if (computerPick2 == 3)                      //if the random number chosen is 3 - use this attack
+        {
+            Instantiate(waterWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots water
+        }
+    }
+
+    void MyBlueAttacks(Random myBlueAttack)          //Blue Wizard Attacks
+    {
+        int computerPick3;
+        computerPick3 = Random.Range(1, 4);          //picks a random between 1 and 4
+
+        Debug.Log(computerPick3);                    //check with debug what the number is
+        Debug.Log("Blue attacks");                   //says that blue is attacking
+
+        if (computerPick3 == 1)                      //if the random number chosen is 1 - use this attack
+        {
+            Instantiate(fireWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots fire
+        }
+        if (computerPick3 == 2)                      //if the random number chosen is 2 - use this attack
+        {
+            Instantiate(rockWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots rock
+        }
+        if (computerPick3 == 3)                      //if the random number chosen is 3 - use this attack
+        {
+            Instantiate(waterWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots water
+        }
+    }
+
     void redAttack ()       //red's attack
     {
         Debug.Log("Red attacks");
+        
     }
 
     void blueAttack()       //blue's attack
