@@ -14,21 +14,21 @@ public class CharacerAttacks : MonoBehaviour
 
     public GameObject diceOutcomePanel;     //countdown panel after dice roll
 
-    public Text diceOutcomeText;        //text to notify player of dice outcome
+    public Text diceOutcomeText;    //text to notify player of dice outcome
     public Text wizardFirst;        //text to notify player of which wizard attacks after
-    public Text countdownTimer;        //text to notify player of when the game will start
+    public Text countdownTimer;     //text to notify player of when the game will start
 
 
-    public float weaponPower;              //Bullet Strength
-    public float redHealth;                //Red Wizard Health
-    public float blueHealth;               //Blue Wizard Health
-    public float myTimer;                  //Game Timer
-    public float myCountdownTimer;          //countdown timer
+    public float weaponPower;       //Bullet Strength
+    public float redHealth;         //Red Wizard Health
+    public float blueHealth;        //Blue Wizard Health
+    public float myTimer;           //Game Timer
+    public float myCountdownTimer;  //countdown timer
 
-    public bool gameStarted;               //Check if game has started
-    public bool redFirst;                  //Who will make the first move
+    public bool gameStarted;        //Check if game has started
+    public bool redFirst;           //Who will make the first move
     public bool oddRoll;            //Dice roll odd or even
-    public bool betRed;                    //bet red or blue
+    public bool betRed;             //bet red or blue
     public bool diceRolled;         //checks if dice has been rolled
     public bool bet10coins;         //player bets 10 or 25 coins
     public bool betOdd;             //player bet on odd;
@@ -50,8 +50,8 @@ public class CharacerAttacks : MonoBehaviour
         oddRoll = false;            //dice roll is odd
         redFirst = false;           //red first go
         betRed = false;             //bet on red
-        diceRolled = false;          //the dice has not yet been rolled
-        bet10coins = true;              //sets 10 coins to default
+        diceRolled = false;         //the dice has not yet been rolled
+        bet10coins = true;          //sets 10 coins to default
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
@@ -61,12 +61,12 @@ public class CharacerAttacks : MonoBehaviour
     void FixedUpdate()
     {
 
-        if (gameStarted == true)                    //if the game has started
+        if (gameStarted == true)            //if the game has started
         {
             if (diceRolled == false)        //if the dice hasnt been rolled
             {
-                MyGameStartRoll(myDice);                        //roll the dice
-                diceRolled = true;                                 //not to roll each frame, set the dice as rolled
+                MyGameStartRoll(myDice);    //roll the dice
+                diceRolled = true;          //not to roll each frame, set the dice as rolled
             }
 
             diceOutcomePanel.SetActive(true);           //set the panel dice outcome to active
@@ -75,23 +75,23 @@ public class CharacerAttacks : MonoBehaviour
 
             myTimer += 1;               //timer counts 60 times a second (each frame)
 
-            if (myTimer % 60 == 1)              //if the timer devided by 60 is 1, do:
+            if (myTimer % 60 == 1)      //if the timer devided by 60 is 1, do:
             {
-                myCountdownTimer -= 1;             //make the countdown timer go down by 1 each 60 frames (each second)
+                myCountdownTimer -= 1;  //make the countdown timer go down by 1 each 60 frames (each second)
             }
 
             if (betRed == true)         //if the player bets on red to win
             {
 
-                if ((betOdd == true && oddRoll == true) || (betOdd == false && oddRoll == false))       //if the player guessed the dice roll correctly they will go first
+                if ((betOdd == true && oddRoll == true) || (betOdd == false && oddRoll == false))     //if the player guessed the dice roll correctly they will go first
                 {
                     wizardFirst.text = "The RED wizard will attack first";
-                    redFirst = true; //red wizard will attack first
+                    redFirst = true;    //red wizard will attack first
                 }
                 else
                 {
                     wizardFirst.text = "The BLUE wizard will attack first";                             //if the player didnt guess the dice roll correctly they wont fo first
-                    redFirst = false; //blue wizard will attack first
+                    redFirst = false;   //blue wizard will attack first
                 }
 
             }
@@ -121,17 +121,17 @@ public class CharacerAttacks : MonoBehaviour
     void MyGameStartRoll(Random myDice)             //dice roll
     {
         int computerPick;
-        computerPick = Random.Range(1, 7);                  //picks a random between 1 and 6
+        computerPick = Random.Range(1, 7);          //picks a random between 1 and 6
 
-        oddRoll = computerPick % 2 == 1;                    //if the number is odd or even
+        oddRoll = computerPick % 2 == 1;            //if the number is odd or even
         
-        Debug.Log(computerPick);                                    //check with debug what the number is
+        Debug.Log(computerPick);                    //check with debug what the number is
 
-        if (oddRoll == true)                     //the dice is odd
+        if (oddRoll == true)                        //the dice is odd
         {
             diceOutcomeText.text = "The dice rolled an ODD number";
         }
-        if (oddRoll == false)                    //the dice is even
+        if (oddRoll == false)                       //the dice is even
         {
             diceOutcomeText.text = "The dice rolled an EVEN number";
         }
