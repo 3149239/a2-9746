@@ -17,9 +17,12 @@ public class CharacerAttacks : MonoBehaviour
     public Text diceOutcomeText;    //text to notify player of dice outcome
     public Text wizardFirst;        //text to notify player of which wizard attacks after
     public Text countdownTimer;     //text to notify player of when the game will start
+    public Text redHealthText;      //text to show red wizard health level
+    public Text blueHealthText;      //text to show blue wizard health level
 
 
     public float weaponPower;       //Bullet Strength
+    public float weightedPower;     //multiplier for weighter random power levels depending on health
     public float redHealth;         //Red Wizard Health
     public float blueHealth;        //Blue Wizard Health
     public float myTimer;           //Game Timer
@@ -47,8 +50,8 @@ public class CharacerAttacks : MonoBehaviour
     void Start()
     {
 
-        redHealth = 20f;            //Red Wizard starting health
-        blueHealth = 20f;           //Blue Wizard starting health
+        redHealth = 100f;            //Red Wizard starting health
+        blueHealth = 100f;           //Blue Wizard starting health
         myTimer = 0f;               //Timer starts at 0
         myCountdownTimer = 6f;      //Countdown timer starts at 6 seconds
         weaponPower = 1f;           //Weapon power starts at 1
@@ -60,6 +63,7 @@ public class CharacerAttacks : MonoBehaviour
         bet10coins = true;          //sets 10 coins to default
         fightStart = false;         //the fight has not yet started
         attackTimer = 0;            //sets attack timer to 0
+        weightedPower = 1;          //weighted multiplier starts at 1
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
@@ -68,7 +72,16 @@ public class CharacerAttacks : MonoBehaviour
     // Update is called once per frame (60fps)
     void FixedUpdate()
     {
-        
+        if (redHealth <= 0)     //sets red's health to 0 if it falls below 0
+        {
+            redHealth = 0;
+        }
+
+        if (blueHealth <= 0)     //sets blue's health to 0 if it falls below 0
+        {
+            blueHealth = 0;
+        }
+
 
         if (gameStarted == true)            //if the game has started
         {
@@ -137,7 +150,6 @@ public class CharacerAttacks : MonoBehaviour
                     if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack blue
                     {
                         redAttacked = false;       //says that red hasnt attacked yet
-                        //redAttack();               //red attacks first
                         MyRedAttacks(myRedAttack);
                         firstAttacked = true;      //tells player its blue's turn to attack
                         attackTimer = 0;           //sets blue's attack timer to 0
@@ -146,7 +158,6 @@ public class CharacerAttacks : MonoBehaviour
                     else if (attackTimer == 3 && firstAttacked == true)          //3 seconds after red's attack, blue can now attack
                     {
                         redAttacked = true;        //says that red has already attacked
-                        //blueAttack();              //blue can attack
                         MyBlueAttacks(myBlueAttack);
                         firstAttacked = false;     //says the second wizard has attacks
                     }
@@ -156,7 +167,6 @@ public class CharacerAttacks : MonoBehaviour
                     if (myCountdownTimer % 6 == 1 && firstAttacked == false)      //every 6 seconds attack red
                     {
                         redAttacked = true;        //says that red has already attacked
-                        //blueAttack();              //blue attacks first
                         MyBlueAttacks(myBlueAttack);
                         firstAttacked = true;      //tells player its red's turn to attack
                         attackTimer = 0;           //sets red's attack timer to 0
@@ -165,11 +175,14 @@ public class CharacerAttacks : MonoBehaviour
                     else if (attackTimer == 3 && firstAttacked == true)           //3 seconds after blue's attack, red can now attack
                     {
                         redAttacked = false;       //says that red hasnt attacked yet
-                        //redAttack();               //red can attack
                         MyRedAttacks(myRedAttack);
                         firstAttacked = false;     //says the second wizard has attacks
                     }
                 }
+
+                redHealthText.text = ("Red Wizard's Health: " + redHealth.ToString());      //sets the red's health text to its float value
+                blueHealthText.text = ("Blue Wizard's Health: " + blueHealth.ToString());      //sets the red's health text to its float value
+
             }
 
         }
@@ -202,17 +215,39 @@ public class CharacerAttacks : MonoBehaviour
         Debug.Log(computerPick2);                    //check with debug what the number is
         Debug.Log("Red attacks");                    //says that red is attacking
 
+        int computerPick4;                           //picks a random between 1 and 10
+        computerPick4 = Random.Range(1, 10);         
+        if (redHealth < 40)                          //if red wizard health is less then 40%
+        {
+            weightedPower = 1 + (float)computerPick4 / 10;      //then mutiply its attack against blue by computerPick4/10
+        }
+
+        if (redHealth < 20)                          //if red wizard health is less then 20%
+        {
+            weightedPower = 1 + (float)computerPick4 / 5;       //then mutiply its attack against blue by computerPick4/5
+        }
+
+
         if (computerPick2 == 1)                      //if the random number chosen is 1 - use this attack
         {
             Instantiate(fireWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots fire
+            weaponPower = 8 * weightedPower;         //adds multiplier to weapon power
+            blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
+            weightedPower = 1;                       //weighter power is set back to 1
         }
         if (computerPick2 == 2)                      //if the random number chosen is 2 - use this attack
         {
             Instantiate(rockWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots rock
+            weaponPower = 6 * weightedPower;         //adds multiplier to weapon power
+            blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
+            weightedPower = 1;                       //weighter power is set back to 1
         }
         if (computerPick2 == 3)                      //if the random number chosen is 3 - use this attack
         {
             Instantiate(waterWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots water
+            weaponPower = 4 * weightedPower;         //adds multiplier to weapon power
+            blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
+            weightedPower = 1;                       //weighter power is set back to 1
         }
     }
 
@@ -224,30 +259,42 @@ public class CharacerAttacks : MonoBehaviour
         Debug.Log(computerPick3);                    //check with debug what the number is
         Debug.Log("Blue attacks");                   //says that blue is attacking
 
+        int computerPick5;                           //picks a random between 1 and 10
+        computerPick5 = Random.Range(1, 10);
+        if (blueHealth < 40)                          //if blue wizard health is less then 40%
+        {
+            weightedPower = 1 + (float)computerPick5 / 10;      //then mutiply its attack against red by computerPick5/10
+        }
+
+        if (blueHealth < 20)                          //if blue wizard health is less then 20%
+        {
+            weightedPower = 1 + (float)computerPick5 / 5;       //then mutiply its attack against red by computerPick5/5
+        }
+
         if (computerPick3 == 1)                      //if the random number chosen is 1 - use this attack
         {
             Instantiate(fireWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots fire
+            weaponPower = 8 * weightedPower;         //adds multiplier to weapon power
+            redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
+            weightedPower = 1;                       //weighter power is set back to 1
         }
         if (computerPick3 == 2)                      //if the random number chosen is 2 - use this attack
         {
             Instantiate(rockWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots rock
+            weaponPower = 6 * weightedPower;         //adds multiplier to weapon power
+            redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
+            weightedPower = 1;                       //weighter power is set back to 1
         }
         if (computerPick3 == 3)                      //if the random number chosen is 3 - use this attack
         {
             Instantiate(waterWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots water
+            weaponPower = 4 * weightedPower;         //adds multiplier to weapon power
+            redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
+            weightedPower = 1;                       //weighter power is set back to 1
         }
     }
 
-    void redAttack ()       //red's attack
-    {
-        Debug.Log("Red attacks");
-        
-    }
 
-    void blueAttack()       //blue's attack
-    {
-        Debug.Log("Blue attacks");
-    }
 
 
 
