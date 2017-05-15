@@ -24,6 +24,8 @@ public class CharacerAttacks : MonoBehaviour
     public Text redHealthText;      //text to show red wizard health level
     public Text blueHealthText;     //text to show blue wizard health level
     public Text playerCoinsText;    //text from player's coins
+    public Text winAmountText;      //text to show the win amount
+    public Text loseAmountText;     //text to show the lost amount
 
 
     public float weaponPower;       //Bullet Strength
@@ -45,6 +47,7 @@ public class CharacerAttacks : MonoBehaviour
     public bool fightStart;         //triggers the fight to begin
     public bool firstAttacked;      //checks if the first wizard has just attacked
     public bool redAttacked;        //checks if red has just attacked
+    
 
     public Random myDice = new Random();        //new random for dice roll
     public Random myRedAttack = new Random();   //new random for red attacks
@@ -102,6 +105,7 @@ public class CharacerAttacks : MonoBehaviour
                 }
 
                 fightStart = false;                         //the fight has ended
+                gameStarted = false;                        //the game has ended
             }
 
             if (betRed == true && fightStart == true)       //if the player bet red and blue won
@@ -109,6 +113,7 @@ public class CharacerAttacks : MonoBehaviour
                 loseScreen.SetActive(false);                //show lose screen
 
                 fightStart = false;                         //the fight has ended
+                gameStarted = false;                        //the game has ended
             }
         }
 
@@ -130,6 +135,7 @@ public class CharacerAttacks : MonoBehaviour
                 }
 
                 fightStart = false;                         //the fight has ended
+                gameStarted = false;                        //the game has ended
             }
 
             if (betRed == false && fightStart == true)       //if the player bet blue and red won
@@ -137,12 +143,25 @@ public class CharacerAttacks : MonoBehaviour
                 loseScreen.SetActive(false);                //show lose screen
 
                 fightStart = false;                         //the fight has ended
+                gameStarted = false;                        //the game has ended
             }
         }
 
         #endregion
 
         playerCoinsText.text = ("Coins: " + playerCoins.ToString());      //sets player coins text to player coins
+
+        if (bet10coins == true)                             //if the player bet 10 coins and won or lost
+        {
+            winAmountText.text = ("You Won: 20 Coins");
+            loseAmountText.text = ("You Lost: 10 Coins");
+        }
+
+        if(bet10coins == false)                             //if the player bet 25 coins and won or lost
+        {
+            winAmountText.text = ("You Won: 50 Coins");
+            loseAmountText.text = ("You Lost: 10 Coins");
+        }
 
         #region Game Started
 

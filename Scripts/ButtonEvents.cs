@@ -9,7 +9,10 @@ public class ButtonEvents : MonoBehaviour
     public GameObject betSizePanel;     //Second Panel
     public GameObject diceRollPanel;    //Third Panel
     public GameObject healthPanel;      //Forth Panel
-    
+    public GameObject winScreen;        //win screen
+    public GameObject loseScreen;       //loose screen
+
+    public bool startNewGame;           //starts new game
 
     public CharacerAttacks myCharacterAttacks;      //assign character attacks script
 
@@ -18,12 +21,25 @@ public class ButtonEvents : MonoBehaviour
     {
         myCharacterAttacks = GameObject.Find("Scripts").GetComponent<CharacerAttacks>();        //attaches script to mycharacterattacks
 
-        whoToWinPanel.SetActive(true);    //sets first screen to show up at the start of the game 
+        whoToWinPanel.SetActive(true);      //sets first screen to show up at the start of the game 
+
+        startNewGame = false;               //dont start new game
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
+        if (startNewGame == true)           //starts new game
+        {
+            whoToWinPanel.SetActive(true);  //starts first panel to active
+            winScreen.SetActive(false);     //sets win screen to not active
+            loseScreen.SetActive(false);    //sets lose screen to not active
+            healthPanel.SetActive(false);   //sets health panel to not active
+            myCharacterAttacks.redHealth = 100;     //sets red health back to 100
+            myCharacterAttacks.blueHealth = 100;    //sets blue health back to 100
+            myCharacterAttacks.myCountdownTimer = 6;
+            startNewGame = false;
+        }
 		
 	}
 
@@ -68,5 +84,10 @@ public class ButtonEvents : MonoBehaviour
         healthPanel.SetActive(true);
         myCharacterAttacks.betOdd = false;           //says the player thinks the dice roll will be odd
         myCharacterAttacks.gameStarted = true;       // tells character attacks to start running the game
+    }
+
+    public void StartNewGame()                       //starts new game
+    {
+        startNewGame = true;
     }
 }
