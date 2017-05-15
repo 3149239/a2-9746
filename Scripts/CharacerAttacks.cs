@@ -6,11 +6,15 @@ using UnityEngine.UI;
 public class CharacerAttacks : MonoBehaviour
 {
 
+    #region Variables
+
     public GameObject redWizard;    //Red Wizard
     public GameObject blueWizard;   //Blue Wizard
     public GameObject rockWeapon;   //Rock Bullet
     public GameObject waterWeapon;  //Water Bullet
     public GameObject fireWeapon;   //Fire Bullet
+    public GameObject winScreen;    //win screen
+    public GameObject loseScreen;   //lose screen
 
     public GameObject diceOutcomePanel;     //countdown panel after dice roll
 
@@ -18,7 +22,8 @@ public class CharacerAttacks : MonoBehaviour
     public Text wizardFirst;        //text to notify player of which wizard attacks after
     public Text countdownTimer;     //text to notify player of when the game will start
     public Text redHealthText;      //text to show red wizard health level
-    public Text blueHealthText;      //text to show blue wizard health level
+    public Text blueHealthText;     //text to show blue wizard health level
+    public Text playerCoinsText;    //text from player's coins
 
 
     public float weaponPower;       //Bullet Strength
@@ -28,6 +33,7 @@ public class CharacerAttacks : MonoBehaviour
     public float myTimer;           //Game Timer
     public float myCountdownTimer;  //countdown timer
     public float attackTimer;       //timer between attacks
+    public float playerCoins;       //player's coins
 
     public bool gameStarted;        //Check if game has started
     public bool redFirst;           //Who will make the first move
@@ -44,11 +50,12 @@ public class CharacerAttacks : MonoBehaviour
     public Random myRedAttack = new Random();   //new random for red attacks
     public Random myBlueAttack = new Random();  //new random for blue attacks
 
-
+    #endregion
 
     // Use this for initialization
     void Start()
     {
+        #region start
 
         redHealth = 100f;            //Red Wizard starting health
         blueHealth = 100f;           //Blue Wizard starting health
@@ -64,24 +71,80 @@ public class CharacerAttacks : MonoBehaviour
         fightStart = false;         //the fight has not yet started
         attackTimer = 0;            //sets attack timer to 0
         weightedPower = 1;          //weighted multiplier starts at 1
+        playerCoins = 100;          //player starts with 100 coins
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
+
+        #endregion
     }
 
     // Update is called once per frame (60fps)
     void FixedUpdate()
     {
-        if (redHealth <= 0)     //sets red's health to 0 if it falls below 0
+        #region Wizards Dead
+
+        if (redHealth <= 0)                                 //sets red's health to 0 if it falls below 0
         {
             redHealth = 0;
+            if (betRed == false && fightStart == true)      //if the player bet blue and blue won
+            {
+                winScreen.SetActive(true);                  //show win screen
+
+                if (bet10coins == true)
+                {
+                    playerCoins += 20;                      //if the player bet 10 coins give them 20 coins
+                }
+
+                if (bet10coins == false)
+                {
+                    playerCoins += 50;                      //if the player bet 25 coins give them 50 coins
+                }
+
+                fightStart = false;                         //the fight has ended
+            }
+
+            if (betRed == true && fightStart == true)       //if the player bet red and blue won
+            {
+                loseScreen.SetActive(false);                //show lose screen
+
+                fightStart = false;                         //the fight has ended
+            }
         }
 
-        if (blueHealth <= 0)     //sets blue's health to 0 if it falls below 0
+        if (blueHealth <= 0)                                //sets blue's health to 0 if it falls below 0
         {
             blueHealth = 0;
+            if (betRed == true && fightStart == true)      //if the player bet red and red won
+            {
+                winScreen.SetActive(true);                  //show win screen
+
+                if (bet10coins == true)
+                {
+                    playerCoins += 20;                      //if the player bet 10 coins give them 20 coins
+                }
+
+                if (bet10coins == false)
+                {
+                    playerCoins += 50;                      //if the player bet 25 coins give them 50 coins
+                }
+
+                fightStart = false;                         //the fight has ended
+            }
+
+            if (betRed == false && fightStart == true)       //if the player bet blue and red won
+            {
+                loseScreen.SetActive(false);                //show lose screen
+
+                fightStart = false;                         //the fight has ended
+            }
         }
 
+        #endregion
+
+        playerCoinsText.text = ("Coins: " + playerCoins.ToString());      //sets player coins text to player coins
+
+        #region Game Started
 
         if (gameStarted == true)            //if the game has started
         {
@@ -102,6 +165,8 @@ public class CharacerAttacks : MonoBehaviour
                 myCountdownTimer -= 1;  //make the countdown timer go down by 1 each 60 frames (each second)
                 attackTimer += 1;       //makes the attack timer go up each second
             }
+
+            #region Player Bets
 
             if (betRed == true)         //if the player bets on red to win
             {
@@ -135,11 +200,15 @@ public class CharacerAttacks : MonoBehaviour
 
             }
 
+            #endregion
+
             if (myCountdownTimer == 0)             //if the timer reaches zero
             {
                 myCountdownTimer = 100;            //set timer to 100
                 fightStart = true;                 //start the fight
             }
+
+            #region Fight started
 
             if (fightStart == true)                //if the fight has started
             {
@@ -185,11 +254,20 @@ public class CharacerAttacks : MonoBehaviour
 
             }
 
+            #endregion
+
+            #endregion
+
         }
+
+
     }
 
     void MyGameStartRoll(Random myDice)             //dice roll
     {
+
+        #region Game Dice Roll
+
         int computerPick;
         computerPick = Random.Range(1, 7);          //picks a random between 1 and 6
 
@@ -205,15 +283,22 @@ public class CharacerAttacks : MonoBehaviour
         {
             diceOutcomeText.text = "The dice rolled an EVEN number";
         }
+
+        #endregion
     }
 
     void MyRedAttacks(Random myRedAttack)            //Red Wizard Attacks
     {
+
+        #region Red Attack
+
         int computerPick2;
         computerPick2 = Random.Range(1, 4);          //picks a random between 1 and 4
 
         Debug.Log(computerPick2);                    //check with debug what the number is
         Debug.Log("Red attacks");                    //says that red is attacking
+
+        #region Weighted Random Red
 
         int computerPick4;                           //picks a random between 1 and 10
         computerPick4 = Random.Range(1, 10);         
@@ -227,6 +312,7 @@ public class CharacerAttacks : MonoBehaviour
             weightedPower = 1 + (float)computerPick4 / 5;       //then mutiply its attack against blue by computerPick4/5
         }
 
+        #endregion
 
         if (computerPick2 == 1)                      //if the random number chosen is 1 - use this attack
         {
@@ -249,15 +335,21 @@ public class CharacerAttacks : MonoBehaviour
             blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
             weightedPower = 1;                       //weighter power is set back to 1
         }
+
+        #endregion
     }
 
     void MyBlueAttacks(Random myBlueAttack)          //Blue Wizard Attacks
     {
+        #region Blue Attack
+
         int computerPick3;
         computerPick3 = Random.Range(1, 4);          //picks a random between 1 and 4
 
         Debug.Log(computerPick3);                    //check with debug what the number is
         Debug.Log("Blue attacks");                   //says that blue is attacking
+
+        #region Weighted Random Blue
 
         int computerPick5;                           //picks a random between 1 and 10
         computerPick5 = Random.Range(1, 10);
@@ -270,6 +362,8 @@ public class CharacerAttacks : MonoBehaviour
         {
             weightedPower = 1 + (float)computerPick5 / 5;       //then mutiply its attack against red by computerPick5/5
         }
+
+        #endregion
 
         if (computerPick3 == 1)                      //if the random number chosen is 1 - use this attack
         {
@@ -292,6 +386,9 @@ public class CharacerAttacks : MonoBehaviour
             redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
             weightedPower = 1;                       //weighter power is set back to 1
         }
+
+        #endregion
+
     }
 
 

@@ -9,13 +9,16 @@ public class ButtonEvents : MonoBehaviour
     public GameObject betSizePanel;     //Second Panel
     public GameObject diceRollPanel;    //Third Panel
     public GameObject healthPanel;      //Forth Panel
+    
 
     public CharacerAttacks myCharacterAttacks;      //assign character attacks script
 
     // Use this for initialization
     void Start ()
     {
-        myCharacterAttacks = GameObject.Find("Scripts").GetComponent<CharacerAttacks>();
+        myCharacterAttacks = GameObject.Find("Scripts").GetComponent<CharacerAttacks>();        //attaches script to mycharacterattacks
+
+        whoToWinPanel.SetActive(true);    //sets first screen to show up at the start of the game 
     }
 	
 	// Update is called once per frame
@@ -43,12 +46,14 @@ public class ButtonEvents : MonoBehaviour
         betSizePanel.SetActive(false);
         diceRollPanel.SetActive(true);
         myCharacterAttacks.bet10coins = true;       //says the player chose to bet 10 coins
+        myCharacterAttacks.playerCoins -= 10;       //takes 10 coins from the player
     }
     public void ChangeToDiceRoll25()                //Sets gameobjects to active or hidden
     {
         betSizePanel.SetActive(false);
         diceRollPanel.SetActive(true);
-        myCharacterAttacks.bet10coins = false;       //says the player chose to bet 10 coins
+        myCharacterAttacks.bet10coins = false;       //says the player chose to bet 25 coins
+        myCharacterAttacks.playerCoins -= 25;        //takes 25 coins from the player
     }
     public void ChangeToHealthOdd()                  //Sets gameobjects to active or hidden
     {
