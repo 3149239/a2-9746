@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +28,7 @@ public class CharacerAttacks : MonoBehaviour
     public Text winAmountText;      //text to show the win amount
     public Text loseAmountText;     //text to show the lost amount
     public Text attackHistoryText;  //text to show attack history
+    public Text highestAttackText;  //text to show highest attack so far
 
 
     public float weaponPower;       //Bullet Strength
@@ -37,6 +39,7 @@ public class CharacerAttacks : MonoBehaviour
     public float myCountdownTimer;  //countdown timer
     public float attackTimer;       //timer between attacks
     public float playerCoins;       //player's coins
+    public float highestAttack;     //highest attack yet
 
     public string powerHistoryString;           //string to hold power history
    
@@ -95,7 +98,7 @@ public class CharacerAttacks : MonoBehaviour
     void FixedUpdate()
     {
         #region Wizards Dead
-
+                    
         if (redHealth <= 0)                                 //sets red's health to 0 if it falls below 0
         {
             redHealth = 0;
@@ -289,6 +292,18 @@ public class CharacerAttacks : MonoBehaviour
             if (attackHistory)              //if bool attack histroy is true
             {
                 AddPowerHistory();          //add the power to history text
+
+                if (fightStart)
+                {
+                    var highestAttack = powerHistoryList.Where(flt => flt % flt == 0).OrderBy(n => n);    //Using LINQ and Lambda Expression to find highest attack
+
+                    foreach (float myHighestAttack in highestAttack)                                      //setting highest attack text to highest attack
+                    {
+                        highestAttackText.text = "Highest Attack: \n" + myHighestAttack.ToString();
+                        //Debug.Log(myHighestAttack);
+                    }
+                }
+
                 attackHistory = false;      //history was added
             }   
 
