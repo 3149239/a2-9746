@@ -110,7 +110,7 @@ public class CharacerAttacks : MonoBehaviour
 
             if (betRed == true && fightStart == true)       //if the player bet red and blue won
             {
-                loseScreen.SetActive(false);                //show lose screen
+                loseScreen.SetActive(true);                //show lose screen
 
                 fightStart = false;                         //the fight has ended
                 gameStarted = false;                        //the game has ended
@@ -140,7 +140,7 @@ public class CharacerAttacks : MonoBehaviour
 
             if (betRed == false && fightStart == true)       //if the player bet blue and red won
             {
-                loseScreen.SetActive(false);                //show lose screen
+                loseScreen.SetActive(true);                //show lose screen
 
                 fightStart = false;                         //the fight has ended
                 gameStarted = false;                        //the game has ended
