@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ButtonEventsInh : MonoBehaviour
 {
@@ -37,8 +38,9 @@ public class ButtonEventsInh : MonoBehaviour
             healthPanel.SetActive(false);           //sets health panel to not active
             myCharacterAttacks.redHealth = 100;     //sets red health back to 100
             myCharacterAttacks.blueHealth = 100;    //sets blue health back to 100
-            myCharacterAttacks.myCountdownTimer = 6;
-            startNewGame = false;
+            myCharacterAttacks.myCountdownTimer = 6;                    //resets countdown timer to 6 seconds
+            startNewGame = false;                                       //new game has already started
+            myCharacterAttacks.attackHistoryText.text = "Current Attack Strength: \n" + 0.ToString();   //sets current attack text to 0
         }
 
     }

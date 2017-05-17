@@ -26,6 +26,7 @@ public class CharacerAttacks : MonoBehaviour
     public Text playerCoinsText;    //text from player's coins
     public Text winAmountText;      //text to show the win amount
     public Text loseAmountText;     //text to show the lost amount
+    public Text attackHistoryText;  //text to show attack history
 
 
     public float weaponPower;       //Bullet Strength
@@ -37,6 +38,8 @@ public class CharacerAttacks : MonoBehaviour
     public float attackTimer;       //timer between attacks
     public float playerCoins;       //player's coins
 
+    public string powerHistoryString;           //string to hold power history
+   
     public bool gameStarted;        //Check if game has started
     public bool redFirst;           //Who will make the first move
     public bool oddRoll;            //Dice roll odd or even
@@ -47,11 +50,13 @@ public class CharacerAttacks : MonoBehaviour
     public bool fightStart;         //triggers the fight to begin
     public bool firstAttacked;      //checks if the first wizard has just attacked
     public bool redAttacked;        //checks if red has just attacked
+    public bool attackHistory;      //checks if attack history is being called
     
-
     public Random myDice = new Random();        //new random for dice roll
     public Random myRedAttack = new Random();   //new random for red attacks
     public Random myBlueAttack = new Random();  //new random for blue attacks
+
+    public List<float> powerHistoryList = new List<float>();    //history of attack strengths in generic list format
 
     #endregion
 
@@ -72,12 +77,16 @@ public class CharacerAttacks : MonoBehaviour
         diceRolled = false;         //the dice has not yet been rolled
         bet10coins = true;          //sets 10 coins to default
         fightStart = false;         //the fight has not yet started
+        attackHistory = true;       //attack history has started
         attackTimer = 0;            //sets attack timer to 0
         weightedPower = 1;          //weighted multiplier starts at 1
         playerCoins = 100;          //player starts with 100 coins
 
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
+
+        
+
 
         #endregion
     }
@@ -277,9 +286,30 @@ public class CharacerAttacks : MonoBehaviour
 
             #endregion
 
+            if (attackHistory)              //if bool attack histroy is true
+            {
+                AddPowerHistory();          //add the power to history text
+                attackHistory = false;      //history was added
+            }   
+
         }
 
 
+    }
+
+    void AddPowerHistory()      //adds power value to histroy
+    {
+        
+        foreach (float flt in powerHistoryList)                                       //loop that says for each float in the list
+
+        {
+            
+            powerHistoryString = "Current Attack Strengh: \n" + flt.ToString() + "\n";//says the current attacks power 
+        }
+        
+
+        attackHistoryText.text = powerHistoryString;                                  //sets text to read current attacks power
+        
     }
 
     void MyGameStartRoll(Random myDice)             //dice roll
@@ -337,6 +367,7 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(fireWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots fire
             weaponPower = 8 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
             weightedPower = 1;                       //weighter power is set back to 1
         }
@@ -344,6 +375,7 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(rockWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots rock
             weaponPower = 6 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
             weightedPower = 1;                       //weighter power is set back to 1
         }
@@ -351,10 +383,13 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(waterWeapon, new Vector3(-3, 0, 0), Quaternion.identity);     //red shoots water
             weaponPower = 4 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             blueHealth -= Mathf.Ceil(weaponPower);   //blue takes damage from red
             weightedPower = 1;                       //weighter power is set back to 1
         }
 
+        attackHistory = true;
+        
         #endregion
     }
 
@@ -388,6 +423,7 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(fireWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots fire
             weaponPower = 8 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
             weightedPower = 1;                       //weighter power is set back to 1
         }
@@ -395,6 +431,7 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(rockWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots rock
             weaponPower = 6 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
             weightedPower = 1;                       //weighter power is set back to 1
         }
@@ -402,10 +439,13 @@ public class CharacerAttacks : MonoBehaviour
         {
             Instantiate(waterWeapon, new Vector3(2, 0, 0), Quaternion.identity);     //blue shoots water
             weaponPower = 4 * weightedPower;         //adds multiplier to weapon power
+            powerHistoryList.Add(weaponPower);       //tells power history current strength
             redHealth -= Mathf.Ceil(weaponPower);    //red takes damage from blue
             weightedPower = 1;                       //weighter power is set back to 1
         }
 
+
+        attackHistory = true;   //adds current power to attack history
         #endregion
 
     }
