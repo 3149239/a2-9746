@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class ChangeToBetSizeBluev2 : ButtonEventsInh
 {
-
     //Sets panels to active or hidden
-
-
-
+    
     public override void CloseAllPanels()
     {
         base.CloseAllPanels();              //closes all panels
