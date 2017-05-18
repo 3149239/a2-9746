@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class CharacerAttacks : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class CharacerAttacks : MonoBehaviour
     public float highestAttack;     //highest attack yet
 
     public string powerHistoryString;           //string to hold power history
-   
+
     public bool gameStarted;        //Check if game has started
     public bool redFirst;           //Who will make the first move
     public bool oddRoll;            //Dice roll odd or even
@@ -54,10 +55,10 @@ public class CharacerAttacks : MonoBehaviour
     public bool firstAttacked;      //checks if the first wizard has just attacked
     public bool redAttacked;        //checks if red has just attacked
     public bool attackHistory;      //checks if attack history is being called
-    
-    public Random myDice = new Random();        //new random for dice roll
-    public Random myRedAttack = new Random();   //new random for red attacks
-    public Random myBlueAttack = new Random();  //new random for blue attacks
+
+    public UnityEngine.Random myDice = new UnityEngine.Random();        //new random for dice roll
+    public UnityEngine.Random myRedAttack = new UnityEngine.Random();   //new random for red attacks
+    public UnityEngine.Random myBlueAttack = new UnityEngine.Random();  //new random for blue attacks
 
     public List<float> powerHistoryList = new List<float>();    //history of attack strengths in generic list format
 
@@ -88,7 +89,7 @@ public class CharacerAttacks : MonoBehaviour
 
         diceOutcomePanel.SetActive(false);  //sets the dice outcome panel to false at the start
 
-        
+
 
 
         #endregion
@@ -98,7 +99,7 @@ public class CharacerAttacks : MonoBehaviour
     void FixedUpdate()
     {
         #region Wizards Dead
-                    
+
         if (redHealth <= 0)                                 //sets red's health to 0 if it falls below 0
         {
             redHealth = 0;
@@ -169,7 +170,7 @@ public class CharacerAttacks : MonoBehaviour
             loseAmountText.text = ("You Lost: 10 Coins");
         }
 
-        if(bet10coins == false)                             //if the player bet 25 coins and won or lost
+        if (bet10coins == false)                             //if the player bet 25 coins and won or lost
         {
             winAmountText.text = ("You Won: 50 Coins");
             loseAmountText.text = ("You Lost: 10 Coins");
@@ -300,43 +301,48 @@ public class CharacerAttacks : MonoBehaviour
                     foreach (float myHighestAttack in highestAttack)                                      //setting highest attack text to highest attack
                     {
                         highestAttackText.text = "Highest Attack: \n" + myHighestAttack.ToString();
-                        //Debug.Log(myHighestAttack);
+
                     }
                 }
 
                 attackHistory = false;      //history was added
-            }   
+            }
 
         }
 
 
+    }
+
+    public static bool SearchFire(float wep)        //searching if fire was used through predicate down below
+    {
+        return wep.Equals(8);                       //if wep power is 8, fire has been used
     }
 
     void AddPowerHistory()      //adds power value to histroy
     {
-        
+
         foreach (float flt in powerHistoryList)                                       //loop that says for each float in the list
 
         {
-            
+
             powerHistoryString = "Current Attack Strengh: \n" + flt.ToString() + "\n";//says the current attacks power 
         }
-        
+
 
         attackHistoryText.text = powerHistoryString;                                  //sets text to read current attacks power
-        
+
     }
 
-    void MyGameStartRoll(Random myDice)             //dice roll
+    void MyGameStartRoll(UnityEngine.Random myDice)             //dice roll
     {
 
         #region Game Dice Roll
 
         int computerPick;
-        computerPick = Random.Range(1, 7);          //picks a random between 1 and 6
+        computerPick = UnityEngine.Random.Range(1, 7);          //picks a random between 1 and 6
 
         oddRoll = computerPick % 2 == 1;            //if the number is odd or even
-        
+
         Debug.Log(computerPick);                    //check with debug what the number is
 
         if (oddRoll == true)                        //the dice is odd
@@ -351,13 +357,13 @@ public class CharacerAttacks : MonoBehaviour
         #endregion
     }
 
-    void MyRedAttacks(Random myRedAttack)            //Red Wizard Attacks
+    void MyRedAttacks(UnityEngine.Random myRedAttack)            //Red Wizard Attacks
     {
 
         #region Red Attack
 
         int computerPick2;
-        computerPick2 = Random.Range(1, 4);          //picks a random between 1 and 4
+        computerPick2 = UnityEngine.Random.Range(1, 4);          //picks a random between 1 and 4
 
         Debug.Log(computerPick2);                    //check with debug what the number is
         Debug.Log("Red attacks");                    //says that red is attacking
@@ -365,7 +371,7 @@ public class CharacerAttacks : MonoBehaviour
         #region Weighted Random Red
 
         int computerPick4;                           //picks a random between 1 and 10
-        computerPick4 = Random.Range(1, 10);         
+        computerPick4 = UnityEngine.Random.Range(1, 10);
         if (redHealth < 40)                          //if red wizard health is less then 40%
         {
             weightedPower = 1 + (float)computerPick4 / 10;      //then mutiply its attack against blue by computerPick4/10
@@ -403,17 +409,38 @@ public class CharacerAttacks : MonoBehaviour
             weightedPower = 1;                       //weighter power is set back to 1
         }
 
-        attackHistory = true;
-        
-        #endregion
-    }
+        attackHistory = true;                        //sets attack history to true
 
-    void MyBlueAttacks(Random myBlueAttack)          //Blue Wizard Attacks
+        
+        Predicate<float> p = SearchFire;             //using predicate to see if the fire spell has been used
+
+        float results2 = powerHistoryList.Find(p);
+
+        if (results2 != 8)                            //if it hasn't been used log fire attack not yet used
+        {
+            Debug.Log("Fire attack not yet used");
+        }
+
+
+        else
+        {
+                                                     //if it has been used log fire has been used               
+            Debug.Log("Fire has been used by Red");
+        }
+        
+                    
+
+
+    #endregion
+
+}
+
+    void MyBlueAttacks(UnityEngine.Random myBlueAttack)          //Blue Wizard Attacks
     {
         #region Blue Attack
 
         int computerPick3;
-        computerPick3 = Random.Range(1, 4);          //picks a random between 1 and 4
+        computerPick3 = UnityEngine.Random.Range(1, 4);          //picks a random between 1 and 4
 
         Debug.Log(computerPick3);                    //check with debug what the number is
         Debug.Log("Blue attacks");                   //says that blue is attacking
@@ -421,7 +448,7 @@ public class CharacerAttacks : MonoBehaviour
         #region Weighted Random Blue
 
         int computerPick5;                           //picks a random between 1 and 10
-        computerPick5 = Random.Range(1, 10);
+        computerPick5 = UnityEngine.Random.Range(1, 10);
         if (blueHealth < 40)                          //if blue wizard health is less then 40%
         {
             weightedPower = 1 + (float)computerPick5 / 10;      //then mutiply its attack against red by computerPick5/10
@@ -460,13 +487,32 @@ public class CharacerAttacks : MonoBehaviour
         }
 
 
-        attackHistory = true;   //adds current power to attack history
+        attackHistory = true;                        //sets attack history to true
+
+
+        Predicate<float> p = SearchFire;             //using predicate to see if the fire spell has been used
+
+        float results = powerHistoryList.Find(p);
+
+        if (results != 8)                            //if it hasn't been used log fire attack not yet used
+        {
+            Debug.Log("Fire attack not yet used");
+        }
+
+
+        else
+        {
+                                                    //if it has been used log fire has been used              
+            Debug.Log("Fire has been used by blue");
+        }
         #endregion
 
     }
 
-
-
-
-
+    
 }
+
+
+
+
+
